@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public class InventoryModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
+    @Column( unique = true, nullable = false)
     private Long id;
 
     @ManyToOne
@@ -39,9 +39,11 @@ public class InventoryModel {
 
     public Long getId() { return id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
+
+    public HielitoModel getHielito() { return hielito; }
+
+    public void setHielito(HielitoModel hielito) { this.hielito = hielito; }
 
     public Integer getQuantity() {
         return quantity;
