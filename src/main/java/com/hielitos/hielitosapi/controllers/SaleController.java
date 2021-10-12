@@ -1,5 +1,6 @@
 package com.hielitos.hielitosapi.controllers;
 
+import com.hielitos.hielitosapi.models.RequestWrapperSale;
 import com.hielitos.hielitosapi.models.SaleModel;
 import com.hielitos.hielitosapi.services.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class SaleController {
     }
 
     @PostMapping
-    public SaleModel saveSale(@RequestBody SaleModel sale){
-        return this.saleService.saveSale(sale);
+    public String saveSale(@RequestBody RequestWrapperSale requestWrapperSale){
+        return this.saleService.saveSale(requestWrapperSale) ? "Exitoso" : "Algo salio mal";
     }
 
     @DeleteMapping("/{id}")

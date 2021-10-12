@@ -1,6 +1,10 @@
 package com.hielitos.hielitosapi.services;
 
+import com.hielitos.hielitosapi.models.HielitoModel;
+import com.hielitos.hielitosapi.models.RequestWrapperSale;
 import com.hielitos.hielitosapi.models.SaleModel;
+import com.hielitos.hielitosapi.repositories.HielitoRepository;
+import com.hielitos.hielitosapi.repositories.HielitoSaleRepository;
 import com.hielitos.hielitosapi.repositories.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,13 +16,27 @@ import java.util.Optional;
 public class SaleService {
     @Autowired
     SaleRepository saleRepository;
+    @Autowired
+    HielitoSaleRepository hielitoSaleRepository;
+    @Autowired
+    HielitoRepository hielitoRepository;
 
-    public ArrayList<SaleModel> getAllSales(){
-        return (ArrayList<SaleModel>) saleRepository.findAll();
-    }
+    public ArrayList<SaleModel> getAllSales(){ return (ArrayList<SaleModel>) saleRepository.findAll();}
 
-    public SaleModel saveSale(SaleModel sale){
-        return saleRepository.save(sale);
+    public boolean saveSale(RequestWrapperSale requestWrapperSale){
+        SaleModel sale = requestWrapperSale.getSale();
+        saleRepository.save(sale);
+
+        requestWrapperSale.getHielitoSales().forEach(h -> {
+            hielitoSaleRepository.save(h);
+            Optional<HielitoModel> hielito = hielitoRepository.findById(h.getHielito().getId());
+            if(hielito.isPresent()){
+                HielitoModel hielitoPresent = hielito.get();
+                hielitoPresent.setStock(hielitoPresent.getStock() - h.getQuantity());
+                hielitoRepository.save(hielitoPresent);
+            }
+        });
+        return true;
     }
 
     public Optional<SaleModel> getSaleById(Long id){
