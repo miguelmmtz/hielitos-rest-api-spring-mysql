@@ -46,6 +46,8 @@ public class SaleService {
         if(sale.isPresent()){
             SaleModel salePresent = sale.get();
             requestWrapperSale.setSale(salePresent);
+            /*ArrayList<HielitoSaleModel> hielitoSales = hielitoSaleRepository.findAllBySaleId(id);*/
+            requestWrapperSale.setHielitoSales(hielitoSaleRepository.findAllBySaleId(id));
         }
         return Optional.of(requestWrapperSale);
     }
