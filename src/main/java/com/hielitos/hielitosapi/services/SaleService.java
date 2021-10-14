@@ -1,6 +1,7 @@
 package com.hielitos.hielitosapi.services;
 
 import com.hielitos.hielitosapi.models.HielitoModel;
+import com.hielitos.hielitosapi.models.HielitoSaleModel;
 import com.hielitos.hielitosapi.models.RequestWrapperSale;
 import com.hielitos.hielitosapi.models.SaleModel;
 import com.hielitos.hielitosapi.repositories.HielitoRepository;
@@ -39,8 +40,14 @@ public class SaleService {
         return true;
     }
 
-    public Optional<SaleModel> getSaleById(Long id){
-        return saleRepository.findById(id);
+    public Optional<RequestWrapperSale> getSaleById(Long id){
+        RequestWrapperSale requestWrapperSale = new RequestWrapperSale();
+        Optional<SaleModel> sale = saleRepository.findById(id);
+        if(sale.isPresent()){
+            SaleModel salePresent = sale.get();
+            requestWrapperSale.setSale(salePresent);
+        }
+        return Optional.of(requestWrapperSale);
     }
 
     public boolean deleteSale(Long id){

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/sales")
@@ -22,6 +23,11 @@ public class SaleController {
     @PostMapping
     public String saveSale(@RequestBody RequestWrapperSale requestWrapperSale){
         return this.saleService.saveSale(requestWrapperSale) ? "Exitoso" : "Algo salio mal";
+    }
+
+    @GetMapping("/{id}")
+    public Optional<RequestWrapperSale> getSaleById(@PathVariable("id") Long id){
+        return this.saleService.getSaleById(id);
     }
 
     @DeleteMapping("/{id}")
