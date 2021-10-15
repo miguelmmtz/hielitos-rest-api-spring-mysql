@@ -32,6 +32,6 @@ public class SaleController {
 
     @DeleteMapping("/{id}")
     public String deleteSaleById(@PathVariable("id") Long id){
-        return this.saleService.deleteSale(id) ? "Se ha borrado la venta con id "+id : "No se pudo eliminar la venta con id "+id;
+        return this.saleService.deleteSale(id) ? "Se ha borrado la venta "+id : "No se pudo eliminar la venta "+id;
     }
 }
