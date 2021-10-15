@@ -27,13 +27,13 @@ public class SaleService {
     public boolean saveSale(RequestWrapperSale requestWrapperSale){
         SaleModel sale = requestWrapperSale.getSale();
         saleRepository.save(sale);
-
-        requestWrapperSale.getHielitoSales().forEach(h -> {
-            hielitoSaleRepository.save(h);
-            Optional<HielitoModel> hielito = hielitoRepository.findById(h.getHielito().getId());
+        requestWrapperSale.getHielitoSales().forEach(hs -> {
+            hs.setSale(sale);
+            hielitoSaleRepository.save(hs);
+            Optional<HielitoModel> hielito = hielitoRepository.findById(hs.getHielito().getId());
             if(hielito.isPresent()){
                 HielitoModel hielitoPresent = hielito.get();
-                hielitoPresent.setStock(hielitoPresent.getStock() - h.getQuantity());
+                hielitoPresent.setStock(hielitoPresent.getStock() - hs.getQuantity());
                 hielitoRepository.save(hielitoPresent);
             }
         });
@@ -46,7 +46,6 @@ public class SaleService {
         if(sale.isPresent()){
             SaleModel salePresent = sale.get();
             requestWrapperSale.setSale(salePresent);
-            /*ArrayList<HielitoSaleModel> hielitoSales = hielitoSaleRepository.findAllBySaleId(id);*/
             requestWrapperSale.setHielitoSales(hielitoSaleRepository.findAllBySaleId(id));
         }
         return Optional.of(requestWrapperSale);
@@ -54,7 +53,20 @@ public class SaleService {
 
     public boolean deleteSale(Long id){
         try {
-            saleRepository.deleteById(id);
+            Optional<RequestWrapperSale> requestWrapperSale = getSaleById(id);
+            if (requestWrapperSale.isPresent()){
+                RequestWrapperSale requestWrapperSalePresent = requestWrapperSale.get();
+                requestWrapperSalePresent.getHielitoSales().forEach(hs -> {
+                    Optional<HielitoModel> hielito = hielitoRepository.findById(hs.getHielito().getId());
+                    if(hielito.isPresent()){
+                      HielitoModel hielitoPresent = hielito.get();
+                      hielitoPresent.setStock(hielitoPresent.getStock() + hs.getQuantity());
+                      hielitoRepository.save(hielitoPresent);
+                    }
+                    hielitoSaleRepository.delete(hs);
+                });
+                saleRepository.delete(requestWrapperSalePresent.getSale());
+            }
             return true;
         } catch (Exception e) {
             return false;
