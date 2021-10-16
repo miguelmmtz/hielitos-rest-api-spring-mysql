@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/inventory")
@@ -24,8 +25,13 @@ public class InventoryController {
         return this.inventoryService.saveInventory(inventory);
     }
 
+    @GetMapping("/{id}")
+    public Optional<InventoryModel> getInventoryById(@PathVariable("id") Long id){
+        return this.inventoryService.getInventoryById(id);
+    }
+
     @DeleteMapping("/{id}")
     public String deleteById(@PathVariable("id") Long id) {
-        return this.inventoryService.deleteInventory(id) ? "Se ha borrado el inventario con id "+id : "No se pudo eliminar el inventario con id "+id;
+        return this.inventoryService.deleteInventory(id) ? "Se ha borrado el inventario "+id : "No se pudo eliminar el inventario "+id;
     }
 }
