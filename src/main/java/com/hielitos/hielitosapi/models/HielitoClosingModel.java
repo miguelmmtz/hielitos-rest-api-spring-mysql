@@ -1,5 +1,6 @@
 package com.hielitos.hielitosapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,7 +19,8 @@ public class HielitoClosingModel {
     private HielitoModel hielito;
     private Integer quantity;
     private Double benefit;
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_weekclosing")
     private WeekClosingModel weekClosing;
     @CreationTimestamp

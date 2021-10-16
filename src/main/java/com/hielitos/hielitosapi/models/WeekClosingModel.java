@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public class WeekClosingModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = true)
+    @Column(unique = true, nullable = false)
     private Long id;
     private Integer quantity;
     private Double benefit;
