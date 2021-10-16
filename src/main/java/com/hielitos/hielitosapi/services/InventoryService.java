@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -17,7 +16,6 @@ public class InventoryService {
     InventoryRepository inventoryRepository;
     @Autowired
     HielitoRepository hielitoRepository;
-
 
     public ArrayList<InventoryModel> getAllInventories(){
         return (ArrayList<InventoryModel>) inventoryRepository.findAll();
@@ -39,10 +37,16 @@ public class InventoryService {
 
     public boolean deleteInventory(Long id){
         try {
-            InventoryModel inventory = inventoryRepository.findById(id).orElse(null);
-            HielitoModel hielito = hielitoRepository.findById(inventory.getHielito().getId()).orElse(null);
-            Objects.requireNonNull(hielito).setStock(hielito.getStock() - inventory.getQuantity());
-            inventoryRepository.deleteById(id);
+            Optional<InventoryModel> inventory = inventoryRepository.findById(id);
+            if(inventory.isPresent()){
+                InventoryModel inventoryPresent = inventory.get();
+                Optional<HielitoModel> hielito = hielitoRepository.findById(inventoryPresent.getHielito().getId());
+                if(hielito.isPresent()){
+                    HielitoModel hielitoPresent = hielito.get();
+                    hielitoPresent.setStock(hielitoPresent.getStock() - inventoryPresent.getQuantity());
+                }
+                inventoryRepository.deleteById(id);
+            }
             return true;
         } catch (Exception e){
             return false;

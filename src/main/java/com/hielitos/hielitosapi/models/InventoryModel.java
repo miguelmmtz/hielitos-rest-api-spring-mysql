@@ -1,6 +1,5 @@
 package com.hielitos.hielitosapi.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,12 +13,9 @@ public class InventoryModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column( unique = true, nullable = false)
     private Long id;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_hielito")
     private HielitoModel hielito;
-
     private Integer quantity;
     private Double estimated_benefit;
     @CreationTimestamp
